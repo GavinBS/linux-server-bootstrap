@@ -242,7 +242,7 @@ EOF
         BOOTSTRAP_UNAME_S=Linux \
         BOOTSTRAP_OS_RELEASE_FILE=$fixture \
         BOOTSTRAP_MACHINE=x86_64 \
-        BOOTSTRAP_REPO_URL=https://github.com/USER/linux-server-bootstrap.git \
+        BOOTSTRAP_REPO_URL=https://github.com/GavinBS/linux-server-bootstrap.git \
         bash "$PROJECT_ROOT/bootstrap.sh" --dry-run --user "$user" --set-shell --ref v1.0.0 >"$output" 2>&1; then
         pass 'bootstrap dry run completes'
     else
@@ -275,7 +275,7 @@ test_repository_detection() {
     local repo nonrepo expected remote seed install_dir stale user group home
     repo="$TEST_TMP/repository"
     nonrepo="$TEST_TMP/incomplete-repository"
-    expected='https://github.com/USER/linux-server-bootstrap.git'
+    expected='https://github.com/GavinBS/linux-server-bootstrap.git'
     git init -q "$repo"
     git -C "$repo" remote add origin "$expected"
     mkdir -p "$nonrepo"

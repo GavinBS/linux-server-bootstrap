@@ -39,25 +39,31 @@ Debian and Ubuntu run `apt-get update` only when at least one requested tool is 
 
 Arch deliberately never runs `pacman -Sy`, which could create a partial upgrade. It also does not run `pacman -Syu` automatically. It installs with the existing sync database using `pacman -S --needed`; when no sync database exists or repository state is too old to install a package, review and run a full `pacman -Syu` yourself, then rerun the bootstrap.
 
-## Before publishing your fork
+## Repository source
 
-Change this line near the top of `bootstrap.sh`:
+By default, the bootstrap checks out the public upstream repository:
 
 ```bash
-DEFAULT_REPO_URL='https://github.com/USER/linux-server-bootstrap.git'
+DEFAULT_REPO_URL='https://github.com/GavinBS/linux-server-bootstrap.git'
 ```
 
-Replace `USER` with the GitHub account or organization that will host the public repository. Alternatively, leave the file unchanged and set `BOOTSTRAP_REPO_URL` when running it.
+To install from a fork, mirror, or private repository, set `BOOTSTRAP_REPO_URL` when running it.
 
 The repository contains no required secrets, tokens, hostnames, IP addresses, or private keys. Do not add credentials to the repository, its URL, dotfiles, local overrides, or Git history.
 
 ## Quick start
 
-After replacing `USER`, download and inspect the bootstrap before executing it:
+For a one-command installation, run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/GavinBS/linux-server-bootstrap/main/bootstrap.sh | bash
+```
+
+The bootstrap defaults to this repository, so no repository URL configuration is required. For reviewable server deployments or a fixed version, use the download-and-verify workflow below instead:
 
 ```bash
 curl -fsSLo bootstrap.sh \
-  https://raw.githubusercontent.com/USER/linux-server-bootstrap/main/bootstrap.sh
+  https://raw.githubusercontent.com/GavinBS/linux-server-bootstrap/main/bootstrap.sh
 
 less bootstrap.sh
 bash bootstrap.sh
@@ -73,7 +79,7 @@ The bootstrap installs Git if necessary, checks out the repository at `~/.local/
 REF=v1.0.0
 
 curl -fsSLo bootstrap.sh \
-  "https://raw.githubusercontent.com/USER/linux-server-bootstrap/${REF}/bootstrap.sh"
+  "https://raw.githubusercontent.com/GavinBS/linux-server-bootstrap/${REF}/bootstrap.sh"
 
 sha256sum bootstrap.sh
 less bootstrap.sh
@@ -140,10 +146,10 @@ bash bootstrap.sh --dry-run --user exampleuser --set-shell --ref v1.0.0
 
 Dry Run detects the distribution, architecture, user, package mapping, repository location, configuration destinations, and requested shell change. It does not validate sudo, update package indexes, install packages, clone or fetch Git, create files, edit `/etc/shells`, or run `chsh`.
 
-If the published repository URL was not edited into `bootstrap.sh`, provide it without putting credentials in the URL:
+To use a different repository, provide its URL without putting credentials in it:
 
 ```bash
-BOOTSTRAP_REPO_URL=https://github.com/USER/linux-server-bootstrap.git \
+BOOTSTRAP_REPO_URL=https://github.com/ACCOUNT/linux-server-bootstrap.git \
   bash bootstrap.sh --ref v1.0.0
 ```
 

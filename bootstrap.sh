@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Replace USER before publishing this repository, or set BOOTSTRAP_REPO_URL.
-DEFAULT_REPO_URL='https://github.com/USER/linux-server-bootstrap.git'
+# Public upstream repository. Override this for a fork or private mirror with
+# BOOTSTRAP_REPO_URL; the bootstrap itself has no architecture-specific URL.
+DEFAULT_REPO_URL='https://github.com/GavinBS/linux-server-bootstrap.git'
 REPO_URL=${BOOTSTRAP_REPO_URL:-$DEFAULT_REPO_URL}
 REF=main
 DRY_RUN=0
@@ -328,7 +329,7 @@ main() {
         show_dry_run
         return
     fi
-    [[ $REPO_URL != *'/USER/'* ]] || die 'Set your GitHub username in DEFAULT_REPO_URL or export BOOTSTRAP_REPO_URL before running.'
+    [[ $REPO_URL != *'/USER/'* ]] || die 'Set a real repository URL in BOOTSTRAP_REPO_URL before running.'
 
     install_git
     prepare_repository "$repo_directory"

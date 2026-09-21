@@ -215,7 +215,7 @@ test_dry_run_no_changes() {
 }
 
 test_bootstrap_dry_run_no_changes() {
-    local user uid gid home fixture fake_bin output before after
+    local user uid gid home fixture fake_bin output stdin_output before after
     user=$(id -un)
     uid=$(id -u)
     gid=$(id -g)
@@ -223,6 +223,7 @@ test_bootstrap_dry_run_no_changes() {
     fixture="$TEST_TMP/bootstrap-os-release"
     fake_bin="$TEST_TMP/fake-bin"
     output="$TEST_TMP/bootstrap-dry-run.out"
+    stdin_output="$TEST_TMP/bootstrap-stdin-dry-run.out"
     mkdir -p "$home" "$fake_bin"
     write_os_release ubuntu 'Ubuntu Test' "$fixture"
     cat >"$fake_bin/getent" <<'EOF'
@@ -251,6 +252,19 @@ EOF
     after=$(find "$home" -mindepth 1 -print | sort)
     assert_equal "$before" "$after" 'bootstrap dry run does not modify target HOME'
     assert_success 'bootstrap dry run reports no-state-change guarantee' grep -Fq 'no system state' "$output"
+
+    if PATH="$fake_bin:$PATH" \
+        FAKE_USERNAME=$user \
+        FAKE_PASSWD_RECORD="${user}:x:${uid}:${gid}::${home}:/bin/sh" \
+        BOOTSTRAP_UNAME_S=Linux \
+        BOOTSTRAP_OS_RELEASE_FILE=$fixture \
+        BOOTSTRAP_MACHINE=x86_64 \
+        bash -s -- --dry-run --user "$user" --set-shell --ref v1.0.0 <"$PROJECT_ROOT/bootstrap.sh" >"$stdin_output" 2>&1; then
+        pass 'bootstrap accepts script input on standard input'
+    else
+        fail 'bootstrap accepts script input on standard input'
+    fi
+    assert_success 'standard-input bootstrap reports no-state-change guarantee' grep -Fq 'no system state' "$stdin_output"
 }
 
 test_default_shell_idempotency() {

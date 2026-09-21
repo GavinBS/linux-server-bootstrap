@@ -1,0 +1,29 @@
+# Local secrets and overrides
+.env
+.env.*
+!.env.example
+.envrc
+secrets/
+credentials/
+*.secret
+*.token
+*.credentials
+*.pem
+*.key
+local/
+*.local
+
+# Logs, temporary files, and generated test artifacts
+*.log
+tmp/
+.tmp/
+tests/artifacts/
+coverage/
+
+# Editor and operating-system files
+*~
+*.swp
+*.swo
+.DS_Store
+.idea/
+.vscode/
